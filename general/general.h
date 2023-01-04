@@ -115,4 +115,9 @@ void x4_FillScreen(uint8_t color);
  */
 void x4_FillScreen_PrePacked(uint8_t color);
 
+void x4_SlideBuffer_FromRight(void *dest, void *src);
+void x4_SlideBuffer_FromLeft(void *dest, void *src);
+void x4_SlideBuffer_FromTop(void *dest, void *src);
+void x4_SlideBuffer_FromBottom(void *dest, void *src);
+
 #endif /*general_h*/
