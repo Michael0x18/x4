@@ -9,10 +9,13 @@
 
 void x4_SlideBuffer_FromRight(void *dest, void *src)
 {
-	for (int i = 0; i < 320 / X4_slide_horizontal_step_size; i++)
+	for (int i = 0; i < X4_SCREEN_WIDTH / X4_slide_horizontal_step_size; i++)
 	{
-		memmove(dest, dest + 120 * X4_slide_horizontal_step_size, 38400 - 120 * X4_slide_horizontal_step_size);
-		memcpy(dest + 38400 - 120 * X4_slide_horizontal_step_size, src + 120 * X4_slide_horizontal_step_size * i, 120 * X4_slide_horizontal_step_size);
+		memmove(dest, dest + X4_HALF_SCREEN_HEIGHT * X4_slide_horizontal_step_size,
+				X4_SCREEN_SIZE - X4_HALF_SCREEN_HEIGHT * X4_slide_horizontal_step_size);
+		memcpy(dest + X4_SCREEN_SIZE - X4_HALF_SCREEN_HEIGHT * X4_slide_horizontal_step_size,
+			   src + X4_HALF_SCREEN_HEIGHT * X4_slide_horizontal_step_size * i,
+			   X4_HALF_SCREEN_HEIGHT * X4_slide_horizontal_step_size);
 	}
 }
 
@@ -32,7 +35,6 @@ void x4_SlideBuffer_FromTop(void *dest, void *src)
 {
 	for (uint24_t j = 0; j < X4_HALF_SCREEN_HEIGHT / X4_slide_vertical_step_size; j++)
 	{
-		uint24_t half_height_i = X4_HALF_SCREEN_HEIGHT * i;
 		for (uint24_t i = 0; i < X4_SCREEN_WIDTH; i++)
 		{
 			memmove(dest + X4_HALF_SCREEN_HEIGHT * i + X4_slide_vertical_step_size,
@@ -46,16 +48,18 @@ void x4_SlideBuffer_FromTop(void *dest, void *src)
 
 void x4_SlideBuffer_FromBottom(void *dest, void *src)
 {
-	for (int24_t j = 0; j < 120 / X4_slide_vertical_step_size; j++)
+	for (int24_t j = 0; j < X4_HALF_SCREEN_HEIGHT / X4_slide_vertical_step_size; j++)
 	{
-		for (int24_t i = 0; i < 320; i++)
+		for (int24_t i = 0; i < X4_SCREEN_WIDTH; i++)
 		{
-			memmove(dest + 120 * i, dest + 120 * i + X4_slide_vertical_step_size, 120 - X4_slide_vertical_step_size);
-			memcpy(dest + 120 * i + 120 - X4_slide_vertical_step_size * j, src + 120 * i, X4_slide_vertical_step_size);
+			memmove(dest + X4_HALF_SCREEN_HEIGHT * i, dest + X4_HALF_SCREEN_HEIGHT * i + X4_slide_vertical_step_size,
+					X4_HALF_SCREEN_HEIGHT - X4_slide_vertical_step_size);
+			memcpy(dest + X4_HALF_SCREEN_HEIGHT * i + X4_HALF_SCREEN_HEIGHT - X4_slide_vertical_step_size * j,
+				   src + X4_HALF_SCREEN_HEIGHT * i, X4_slide_vertical_step_size);
 		}
 	}
 }
-//////////////
+
 void x4_SlideBuffer_FromRight_sync(void *dest, void *scratch, void *src)
 {
 	x4_BlitBuffer(scratch, dest);
