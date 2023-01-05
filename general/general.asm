@@ -1,4 +1,4 @@
-include 'ti84pceg.inc'
+include '../ti84pceg.inc'
 
 	assume adl=1
 	section .text
@@ -46,7 +46,7 @@ _x4_SetDrawLocation:
 	ld	hl,(ti.mpLcdCurr)		; Load the cursor into hl
 	or	a,a				; Reset carry
 	sbc	hl,bc				; Test
-	jq	e,.loop				; Jump if <
+	jq	c,.loop				; Jump if <
 .skip:
 	pop	bc				; Pop original argument back
 	ld	(_x4_Buffer),bc			; Set the draw location
@@ -62,7 +62,7 @@ _x4_SetScreenLocation:
         ; Arguments
         pop     de							; Pop the return address
         pop     bc							; Pop the new pointer
-		ld	(_x4_ScrLoc),bc					; Stash the new screen location
+		;ld	(_x4_ScrLoc),bc					; Stash the new screen location
         push    bc							; Restore the stack
         push    de							; 
         ; Wait
@@ -72,9 +72,53 @@ _x4_SetScreenLocation:
         jq      z,.loop
         ; Set
         ld      de,(ti.mpLcdBase)
-        ld      (_x4_PrevScrBuffer),dec		; Swap to previous buffer
+        ld      (_x4_PrevScrBuffer),de		; Swap to previous buffer
         ld      (ti.mpLcdBase),bc
         ; End
         ld      hl,ti.mpLcdIcr
         ld      (hl), ti.lcdIntLNBU or ti.lcdIntVcomp
         ret
+
+public _x4_BlitBuffer
+_x4_BlitBuffer:
+	pop	bc,de
+	ex (sp),hl
+	push	de,bc
+	ld	bc,38400
+	ldir
+	ret
+
+public _x4_FillScreen
+_x4_FillScreen:
+	pop	bc
+	ex	(sp), hl
+	push	bc
+; pack 4bpp color into 8 bits
+	ld	a, l	; a = color
+	and	a, $F	; a &= 0b1111
+	ld	l, a	; color &= 0b1111
+	add	a, a	; a += a
+	add	a, a	; a += a
+	add	a, a	; a += a
+	add	a, a	; a += a
+	add	a, l	; a += color
+.entry:
+	ld	hl, (_x4_Buffer)
+	ld	de, (_x4_Buffer)
+	inc	de
+	ld	bc, 38400 - 1
+	ld	(hl), a
+	ldir
+	ret
+
+public _x4_FillScreen_PrePacked
+_x4_FillScreen_PrePacked:
+	pop	bc
+	ex	(sp),hl
+	push	bc
+	ld	a, l
+	jq	_x4_FillScreen.entry
+	
+
+extern _x4_Buffer
+extern _x4_PrevScrBuffer

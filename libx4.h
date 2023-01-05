@@ -3,6 +3,7 @@
 
 #include "libx4_constants.h"
 
+#include "general/general.h"
 #include "macros.h"
 #include "cursor/cursor.h"
 #include "font/font.h"

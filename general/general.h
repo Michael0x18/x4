@@ -1,9 +1,18 @@
 #ifndef general_h
 #define general_h
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <tice.h>
+#include <keypadc.h>
+#include <graphx.h>
+#include <string.h>
+
 /**
  * general.h contains definitions for general purpose sub
  */
 #include "../macros.h"
+#include "../libx4_constants.h"
 
 /**
  * Initializes x4
@@ -39,6 +48,9 @@ void x4_End(void);
 /**
  * Returns the address of the location libx4 will use
  * to draw.
+ *
+ * It is recommended to directly use X4_DRAW_LOCATION instead.
+ * This avoids a call and lets it be inlined
  */
 void *x4_GetDrawLocation(void);
 
@@ -48,7 +60,7 @@ void *x4_GetDrawLocation(void);
  *
  * If not, it should be at least 38400 bytes in size.
  */
-void *x4_SetDrawLocation(void);
+void x4_SetDrawLocation(void *addr);
 
 /**
  * Sets the screen location that the LCD controller will
@@ -62,6 +74,9 @@ void x4_SetScreenLocation(void *addr);
 /**
  * Returns the location that the screen is currently being
  * driven from.
+ *
+ * It is recommended to directly use X4_SCREEN_LOCATION instead
+ * This avoids a call and lets it be inlined
  */
 void *x4_GetScreenLocation(void);
 
@@ -119,5 +134,11 @@ void x4_SlideBuffer_FromRight(void *dest, void *src);
 void x4_SlideBuffer_FromLeft(void *dest, void *src);
 void x4_SlideBuffer_FromTop(void *dest, void *src);
 void x4_SlideBuffer_FromBottom(void *dest, void *src);
+
+// TODO these four
+void x4_SlideBuffer_FromRight_sync(void *dest, void *scratch, void *src);
+void x4_SlideBuffer_FromLeft_sync(void *dest, void *scratch, void *src);
+void x4_SlideBuffer_FromTop_sync(void *dest, void *scratch, void *src);
+void x4_SlideBuffer_FromBottom_sync(void *dest, void *scratch, void *src);
 
 #endif /*general_h*/

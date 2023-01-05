@@ -1,5 +1,5 @@
-include 'ti84pceg.inc'
-include 'spi.inc'
+include '../ti84pceg.inc'
+include '../spi.inc'
 
 	assume adl=1
 	section .text
